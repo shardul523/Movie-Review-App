@@ -1,4 +1,5 @@
 const {check, validationResult} = require('express-validator');
+const {sendError} = require('../utils/helper');
 
 exports.UserChecker = [
     check('username').trim().not().isEmpty().withMessage("Username cannot be empty"),
@@ -11,6 +12,6 @@ exports.UserChecker = [
 exports.UserValidator = (req, res, next) => {
     const errors = validationResult(req).array();
     if (errors.length) 
-        return res.json({error: errors[0].msg});
+        return sendError(res, errors[0].msg);
     next();
 }
