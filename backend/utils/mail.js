@@ -10,7 +10,7 @@ var transport = nodemailer.createTransport({
     }
 });
 
-exports.sendMail = async (receiverMail, subject, html) => {
+exports.sendMail = async (senderMail, receiverMail, subject, html) => {
     await transport.sendMail({
         from: 'verification@reviewapp.com',
         to: receiverMail,

@@ -2,8 +2,9 @@ const {isValidObjectId} = require('mongoose');
 
 const UserModel = require('../models/user');
 const EmailVerificationTokenModel = require('../models/emailVerificationToken');
+const PasswordResetTokenModel = require('../models/passwordResetToken');
 const {generateOTP, sendMail} = require('../utils/mail');
-const {sendError} = require('../utils/helper');
+const {sendError, generateRandomBytes} = require('../utils/helper');
 
 
 const createVerificationToken = async (user) => {
@@ -23,7 +24,7 @@ const createVerificationToken = async (user) => {
     <h1>${OTP}</h1>
     `;
 
-    await sendMail(user.email, "Email Verification", mailContent);
+    await sendMail("verification@reviewapp.com", user.email, "Email Verification", mailContent);
 };
 
 
@@ -72,7 +73,7 @@ exports.verifyMail = async (req, res) => {
     <p>We hope you continue to use our services.</p>
     `;
 
-    sendMail(user.email, "Welcome Message", welcomeMail);
+    sendMail("verification@reviewapp.com", user.email, "Welcome Message", welcomeMail);
 
     res.json({message: "User has been verified"});
 };
@@ -95,4 +96,68 @@ exports.resendEmailVerificationToken = async (req, res) => {
     await createVerificationToken(user);
 
     res.json({message: "Email resent to your registered email account!"});
+};
+
+
+exports.resetPassword = async (req, res) => {
+    
+    const {email} = req.body;
+
+    if (!email) return sendError(res, "Email is missing");
+
+    const user = await UserModel.findOne({email});
+
+    if (!user) return sendError(res, "User not found!", 404);
+
+    const resetToken = await PasswordResetTokenModel.findOne({owner: user._id});
+
+    if (resetToken) return sendError(res, "Only one password reset OTP can be sent within an error!");
+
+    const token = await generateRandomBytes();
+
+    const newResetToken = new PasswordResetTokenModel({
+        owner: user._id,
+        token
+    });
+
+    await newResetToken.save();
+
+    const resetPasswordURL = `http://localhost:3000/reset-password?token=${token}&id=${newResetToken.owner}`;
+
+    const resetMail = `
+    <h1>Reset Password</h1>
+    <p>Click the link given below to reset your password:</p>
+    <a href=${resetPasswordURL}>Click Here</a>
+    `;
+
+    sendMail("security@reviewapp.com", email, "Reset Password", resetMail);
+
+    res.json({message: "Password Reset Mail Sent!"});
+};
+
+
+exports.sendPasswordResetTokenStatus = (req, res) => res.json({valid: true});
+
+
+exports.updatePassword = async (req, res) => {
+
+    const {userId, newPassword} = req.body;
+
+    const user = await UserModel.findById(userId);
+
+    const isMatched = await user.comparePassword(newPassword);
+
+    if (isMatched) return sendError(res, "New Password must not be the same as old password");
+
+    user.password = newPassword;
+    await user.save();
+
+    await PasswordResetTokenModel.findByIdAndDelete(req.resetTokenId);
+
+    passwordResetMail = `
+    <h1>Congratulations!</h1>
+    <p>Your password has been reset successfully</p>
+    `;
+
+    await sendMail("security@reviewapp.com", user.email, "Password Reset Successful", passwordResetMail);
 };

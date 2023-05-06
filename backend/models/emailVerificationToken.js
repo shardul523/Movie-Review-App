@@ -28,7 +28,6 @@ EmailVerificationTokenSchema.pre('save', async function(next) {
 
 
 EmailVerificationTokenSchema.methods.compareToken = async function(OTP) {
-    if (OTP.length !== 6) return false;
     const result = await bcrypt.compare(OTP, this.token);
     return result;
 };

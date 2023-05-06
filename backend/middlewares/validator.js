@@ -9,6 +9,12 @@ exports.UserChecker = [
 ];
 
 
+exports.NewPasswordChecker = [
+    check('newPassword').trim().not().isEmpty().withMessage("Password cannot be empty")
+    .isLength({min: 8, max: 20}).withMessage("Password is invalid!")
+];
+
+
 exports.UserValidator = (req, res, next) => {
     const errors = validationResult(req).array();
     if (errors.length) 
