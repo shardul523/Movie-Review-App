@@ -15,6 +15,9 @@ exports.NewPasswordChecker = [
 ];
 
 
+exports.SignInChecker = [this.UserChecker[1], this.UserChecker[2]]; 
+
+
 exports.UserValidator = (req, res, next) => {
     const errors = validationResult(req).array();
     if (errors.length) 

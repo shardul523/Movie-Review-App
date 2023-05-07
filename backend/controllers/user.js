@@ -1,4 +1,6 @@
 const {isValidObjectId} = require('mongoose');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const UserModel = require('../models/user');
 const EmailVerificationTokenModel = require('../models/emailVerificationToken');
@@ -152,7 +154,9 @@ exports.updatePassword = async (req, res) => {
     user.password = newPassword;
     await user.save();
 
-    await PasswordResetTokenModel.findByIdAndDelete(req.resetTokenId);
+    // console.log("Reset Token Id:", req.resetTokenId);
+
+    await PasswordResetTokenModel.findOneAndDelete({owner: user._id});
 
     passwordResetMail = `
     <h1>Congratulations!</h1>
@@ -160,4 +164,24 @@ exports.updatePassword = async (req, res) => {
     `;
 
     await sendMail("security@reviewapp.com", user.email, "Password Reset Successful", passwordResetMail);
+
+    res.json({message: "Password Reset Successfully!"});
+};
+
+
+exports.signIn = async (req, res) => {
+
+    const {email, password} = req.body;
+
+    const user = await UserModel.findOne({email});
+
+    if (!user) return sendError(res, "Email/Password Mismatch");
+
+    const isMatched = await user.comparePassword(password);
+
+    if (!isMatched) return sendError(res, "Email/Password Mismatch");
+
+    const token = jwt.sign({id: user._id}, process.env.ACCESS_SECRET_KEY);
+
+    res.json({...user, token});
 };
