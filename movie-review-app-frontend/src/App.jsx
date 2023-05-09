@@ -1,15 +1,12 @@
-import Navbar from './components/user/Navbar'
-import './index.css'
+import SignIn from "./components/auth/SignIn"
+import Navbar from "./components/user/Navbar"
+import SignUp from "./components/auth/SignUp"
 
-
-
-const App = () => {
+export default function App() {
     return (
-        <div className='bg-primary'>
-            <Navbar />
-        </div>
+        <>
+            <Navbar/>
+            <SignUp/>
+        </>
     )
-};
-
-
-export default App;
+}

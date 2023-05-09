@@ -1,31 +1,29 @@
-import Logo from '../Logo'
-import { CiLight } from 'react-icons/ci'
+import {BsFillSunFill} from "react-icons/bs"
+import Container from "../Container"
 
 
-const Navbar = () => {
+export default function Navbar() {
     return (
-        <nav className='max-w-3xl mx-auto p-1
-        flex justify-between items-center flex-wrap'>
-            <Logo />
-            <ul className='flex justify-evenly items-center space-x-6'>
-                <li>
-                    <button className=' bg-accent rounded'>
-                    <CiLight size={26} className="text-white"/>
-                    </button>
-                </li>
-                <li>
-                    <input type="text" className='rounded p-1 outline-none
-                    border-2 focus:border-accent' 
-                    name="" id="" />
-                </li>
-                <li>
-                    <a href='#'
-                    className='text-white font-semibold'>Login</a>
-                </li>
-            </ul>
-        </nav>
-    );
-};
+        <div className="bg-secondary shadow-sm shadow-gray-500">
+            <Container className="p-2">
+                <div className="flex justify-between items-center">
+                    <img src="/logo-no-background.png" alt="Logo" className="h-20"/>
+                    <ul className="flex items-center space-x-4">
+                        <li>
+                            <button className="p-1 bg-dark-subtle rounded">
+                                <BsFillSunFill className="text-secondary" size={24}/>
+                            </button>
+                        </li>
+                        <li>
+                            <input type="text" name="" id="" className="border-2 border-dark-subtle 
+                            focus:border-white transition text-white
+                            p-1 rounded bg-transparent text-xl outline-none " />
+                        </li>
+                        <li className="text-white font-semibold text-lg">Login</li>
 
-
-export default Navbar;
+                    </ul>
+                </div>
+            </Container>
+        </div>
+    )
+}
