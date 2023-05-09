@@ -1,5 +1,5 @@
 {
-  "name": "movie-review-app",
+  "name": "movie-review-app-backend",
   "version": "1.0.0",
   "description": "A web app for movie reviews",
   "main": "app.js",
