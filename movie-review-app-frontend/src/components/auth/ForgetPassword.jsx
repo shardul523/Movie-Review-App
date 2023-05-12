@@ -5,17 +5,16 @@ import SubmitBtn from '../form/SubmitBtn'
 import CustomLink from '../CustomLink'
 
 
-export default function SignIn() {
+export default function ForgetPassword() {
   return (
     <div className='fixed inset-0 bg-primary -z-10 flex justify-center items-center '>
         <Container>
-            <form action="" className='bg-secondary rounded p-6 w-72 space-y-4'>
-                <FormTitle>Sign In</FormTitle>
+            <form action="" className='bg-secondary rounded p-6 w-96 space-y-4'>
+                <FormTitle>Please Enter Your Email</FormTitle>
                 <FormInput name="email" placeholder="name@example.com" label="Email"/>
-                <FormInput name="password" placeholder="********" label="Password"/>
-                <SubmitBtn>Sign In</SubmitBtn>
+                <SubmitBtn>Send Link</SubmitBtn>
                 <div className="flex justify-between">
-                    <CustomLink to="/auth/forget-password">Forget Password</CustomLink>
+                    <CustomLink to="/auth/sign-in">Sign In</CustomLink>
                     <CustomLink to="/auth/sign-up">Sign Up</CustomLink>
                 </div>
             </form>
