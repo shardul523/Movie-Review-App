@@ -125,3 +125,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# Prettier and ESlint config files
+.prettierrc
+.eslintrc.cjs
